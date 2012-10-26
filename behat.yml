@@ -1,0 +1,9 @@
+default:
+  extensions:
+    Behat\MinkExtension\Extension:
+      goutte: ~
+      selenium2: ~
+  context:
+    parameters:
+      instance_base_url: http://ssodemoinstance.dev/
+      server_base_url: http://ssodemoserver.dev/
