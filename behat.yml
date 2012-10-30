@@ -5,5 +5,5 @@ default:
       selenium2: ~
   context:
     parameters:
-      instance_base_url: http://ssodemoinstance.dev/
-      server_base_url: http://ssodemoserver.dev/
+      instance_base_uri: http://ssodemoinstance.dev/
+      server_base_uri: http://ssodemoserver.dev/

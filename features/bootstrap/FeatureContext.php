@@ -23,12 +23,12 @@ class FeatureContext extends MinkContext {
 	/**
 	 * @var string
 	 */
-	protected $instanceBaseUrl;
+	protected $instanceBaseUri;
 
 	/**
 	 * @var string
 	 */
-	protected $serverBaseUrl;
+	protected $serverBaseUri;
 
 	/**
 	 * Initializes context.
@@ -37,11 +37,11 @@ class FeatureContext extends MinkContext {
 	 * @param array $parameters context parameters (set them up through behat.yml)
 	 */
 	public function __construct(array $parameters) {
-		if (isset($parameters['instance_base_url'])) {
-			$this->instanceBaseUrl = $parameters['instance_base_url'];
+		if (isset($parameters['instance_base_uri'])) {
+			$this->instanceBaseUri = $parameters['instance_base_uri'];
 		}
-		if (isset($parameters['server_base_url'])) {
-			$this->serverBaseUrl = $parameters['server_base_url'];
+		if (isset($parameters['server_base_uri'])) {
+			$this->serverBaseUri = $parameters['server_base_uri'];
 		}
 	}
 
@@ -49,7 +49,7 @@ class FeatureContext extends MinkContext {
 	 * @Given /^I am on the instance homepage$/
 	 */
 	public function iAmOnTheInstanceHomepage() {
-		$this->visit($this->instanceBaseUrl);
+		$this->visit($this->instanceBaseUri);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class FeatureContext extends MinkContext {
 	 * @Then /^I should be redirected to the server$/
 	 */
 	public function iShouldBeRedirectedToTheServer() {
-		Assert::assertStringStartsWith($this->serverBaseUrl, $this->getSession()->getCurrentUrl(), 'Url should start with server base URL');
+		Assert::assertStringStartsWith($this->serverBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with server base URI');
 	}
 
 	/**
@@ -84,7 +84,7 @@ class FeatureContext extends MinkContext {
 	 * @Then /^I should be redirected to the instance$/
 	 */
 	public function iShouldBeRedirectedToTheInstance() {
-		Assert::assertStringStartsWith($this->instanceBaseUrl, $this->getSession()->getCurrentUrl(), 'Url should start with instance base URL');
+		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI');
 	}
 }
 
