@@ -86,6 +86,22 @@ class FeatureContext extends MinkContext {
 	public function iShouldBeRedirectedToTheInstance() {
 		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI');
 	}
-}
 
+	/**
+     * @Given /^the URI should not contain SSO parameters$/
+     */
+    public function theUriShouldNotContainSsoParameters() {
+		throw new \Behat\Behat\Exception\PendingException();
+
+        Assert::assertNotContains('__typo3[singlesignon][accessToken]', $this->getSession()->getCurrentUrl(), 'URI should not contain SSO parameters');
+    }
+
+    /**
+     * @Given /^I should be logged in as "([^"]*)"$/
+     */
+    public function iShouldBeLoggedInAs($accountIdentifier) {
+		$this->assertElementContainsText('#login-status', 'Logged in as: ' . $accountIdentifier);
+    }
+
+}
 ?>

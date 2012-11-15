@@ -19,4 +19,5 @@ Feature: Single-Sign-On
       And I fill in "Password" with "password"
       And I press "Login"
     Then I should be redirected to the instance
-      And I should see "Success, it's secure"
+      And I should be logged in as "admin"
+      And the URI should not contain SSO parameters
