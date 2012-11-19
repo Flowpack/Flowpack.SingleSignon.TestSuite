@@ -1,13 +1,20 @@
 {
-    "require": {
-        "behat/behat": "2.4.*@stable",
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/chlu/BrowserKit.git"
+		}
+	],
+	"require": {
+		"behat/behat": "2.4.*@stable",
 		"behat/mink": "1.4.*@stable",
-        "behat/mink-extension": "*",
-        "behat/mink-goutte-driver": "*",
-        "behat/mink-selenium2-driver": "*"
-    },
-    "minimum-stability": "dev",
-    "config": {
-        "bin-dir": "bin/"
-    }
+		"behat/mink-extension": "*",
+		"behat/mink-goutte-driver": "*",
+		"behat/mink-selenium2-driver": "*",
+		"symfony/browser-kit": "2.1.333"
+	},
+	"minimum-stability": "dev",
+	"config": {
+		"bin-dir": "bin/"
+	}
 }

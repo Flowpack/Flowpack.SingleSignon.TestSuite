@@ -1,5 +1,5 @@
 {
-    "hash": "053cb52edd716cc2ac81febdb28d0d88",
+    "hash": "b31a6f2819b21677d715e6060a715566",
     "packages": [
         {
             "name": "behat/behat",
@@ -595,18 +595,12 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "2.1.x-dev",
+            "version": "v2.1.333",
             "target-dir": "Symfony/Component/BrowserKit",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/BrowserKit",
-                "reference": "32e43b5287c3f5379c1470c5dd755fcf5f625d3d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/BrowserKit/zipball/32e43b5287c3f5379c1470c5dd755fcf5f625d3d",
-                "reference": "32e43b5287c3f5379c1470c5dd755fcf5f625d3d",
-                "shasum": ""
+                "url": "https://github.com/chlu/BrowserKit.git",
+                "reference": "v2.1.333"
             },
             "require": {
                 "php": ">=5.3.3",
@@ -619,7 +613,7 @@
             "suggest": {
                 "symfony/process": "2.1.*"
             },
-            "time": "1351170710",
+            "time": "2012-11-19 15:19:36",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -851,12 +845,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler",
-                "reference": "68b5a33cd29ef0fec701c494519935599970a72f"
+                "reference": "8fe81036d0f7452c2bf75b6d489f1e646741bf0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/DomCrawler/zipball/68b5a33cd29ef0fec701c494519935599970a72f",
-                "reference": "68b5a33cd29ef0fec701c494519935599970a72f",
+                "url": "https://github.com/symfony/DomCrawler/archive/8fe81036d0f7452c2bf75b6d489f1e646741bf0f.zip",
+                "reference": "8fe81036d0f7452c2bf75b6d489f1e646741bf0f",
                 "shasum": ""
             },
             "require": {
@@ -868,7 +862,7 @@
             "suggest": {
                 "symfony/css-selector": "2.1.*"
             },
-            "time": "1350594961",
+            "time": "1352368308",
             "type": "library",
             "extra": {
                 "branch-alias": {

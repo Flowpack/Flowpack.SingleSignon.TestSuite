@@ -103,5 +103,80 @@ class FeatureContext extends MinkContext {
 		$this->assertElementContainsText('#login-status', 'Logged in as: ' . $accountIdentifier);
     }
 
+    /**
+     * @Given /^I should have the role "([^"]*)"$/
+     */
+    public function iShouldHaveTheRole($roleIdentifier) {
+		$this->assertElementContainsText('#login-status', 'Roles: ' . $roleIdentifier);
+    }
+
+	/**
+     * @Given /^I wait so long that my session on the instance expires$/
+     */
+    public function iWaitSoLongThatMySessionOnTheInstanceExpires() {
+			// This code only works with the Goutte driver which
+			// uses a patched version of BrowserKit to fix multi-domain
+			// cookie handling
+		$client = $this->getSession()->getDriver()->getClient();
+		$cookieJar = $client->getCookieJar();
+		$instanceCookies = $cookieJar->allValues($this->instanceBaseUri);
+
+		$parts = parse_url($this->instanceBaseUri);
+		foreach ($instanceCookies as $key => $value) {
+			$cookieJar->expire($key, '/', $parts['host']);
+		}
+    }
+
+	/**
+	 * @Then /^I have the correct session cookie on the server$/
+	 */
+	public function iHaveTheCorrectSessionCookieOnTheServer() {
+		$this->visit($this->serverBaseUri);
+	}
+
+	/**
+	 * @Given /^There is a server account:$/
+	 */
+	public function thereIsAServerAccount(TableNode $accounts) {
+		var_dump($accounts->getRowsHash());
+	}
+
+	/**
+	 * @Given /^There is a mapping for the party name$/
+	 */
+	public function thereIsAMappingForThePartyName() {
+		throw new PendingException();
+	}
+
+	/**
+	 * @When /^I log in to the secured page$/
+	 */
+	public function iLogInToTheSecuredPage() {
+		throw new PendingException();
+	}
+
+	/**
+	 * @Then /^I should have a login name "([^"]*)"$/
+	 */
+	public function iShouldHaveALoginName($loginName) {
+		throw new PendingException();
+	}
+
+	/**
+	 * @Given /^I visit a protected resource$/
+	 */
+	public function iVisitAProtectedResource() {
+		$this->visit($this->instanceBaseUri . 'acme.demoinstance/standard/secure');
+	}
+
+	/**
+	 * @Then /^I should not be redirected$/
+	 */
+	public function iShouldNotBeRedirected() {
+		$client = $this->getSession()->getDriver()->getClient();
+		$history = clone $client->getHistory();
+		$previousRequest = $history->back();
+		Assert::assertStringStartsWith($this->instanceBaseUri, $previousRequest->getUri(), 'Previous request URI should start with instance base URI');
+	}
 }
 ?>
