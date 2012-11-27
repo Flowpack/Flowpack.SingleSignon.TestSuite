@@ -5,5 +5,5 @@ Feature: Global session statistics
 
   Scenario: List active sessions
   Scenario: Find session by global session id
-  Scenario: Find session for account
+  Scenario: Find session by account
   Scenario: List expired sessions
