@@ -193,7 +193,7 @@ class FeatureContext extends MinkContext {
 		$this->fillField('Username', $username);
 		$this->fillField('Password', $password);
 		$this->pressButton('Login');
-		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI');
+		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI after login');
 	}
 
 	/**
@@ -218,6 +218,27 @@ class FeatureContext extends MinkContext {
 		$history = clone $client->getHistory();
 		$previousRequest = $history->back();
 		Assert::assertStringStartsWith($this->instanceBaseUri, $previousRequest->getUri(), 'Previous request URI should start with instance base URI');
+	}
+
+	/**
+	 * @Given /^I am logged in to the secured page$/
+	 */
+	public function iAmLoggedInToTheSecuredPage() {
+		$this->iLogInToTheSecuredPageWithAnd('admin', 'password');
+	}
+
+	/**
+	 * @Given /^I should not be authenticated$/
+	 */
+	public function iShouldNotBeAuthenticated() {
+		$this->assertPageContainsText('Not authenticated');
+	}
+
+	/**
+	 * @Given /^I visit the server homepage$/
+	 */
+	public function iVisitTheServerHomepage() {
+		$this->visit($this->serverBaseUri);
 	}
 
 }
