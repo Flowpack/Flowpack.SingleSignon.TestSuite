@@ -4,7 +4,9 @@ use Behat\Behat\Context\ClosuredContextInterface,
 	Behat\Behat\Context\TranslatedContextInterface,
 	Behat\Behat\Context\BehatContext,
 	Behat\MinkExtension\Context\MinkContext,
-	Behat\Behat\Exception\PendingException;
+	Behat\Behat\Exception\PendingException,
+	Behat\Behat\Event\ScenarioEvent,
+	Behat\Behat\Event\StepEvent;
 use Behat\Gherkin\Node\PyStringNode,
 	Behat\Gherkin\Node\TableNode;
 
@@ -31,6 +33,11 @@ class FeatureContext extends MinkContext {
 	protected $serverBaseUri;
 
 	/**
+	 * @var boolean
+	 */
+	protected $debug = FALSE;
+
+	/**
 	 * Initializes context.
 	 * Every scenario gets it's own context object.
 	 *
@@ -42,6 +49,28 @@ class FeatureContext extends MinkContext {
 		}
 		if (isset($parameters['server_base_uri'])) {
 			$this->serverBaseUri = $parameters['server_base_uri'];
+		}
+		if (isset($parameters['debug']) && $parameters['debug'] === TRUE) {
+			$this->debug = TRUE;
+		}
+		$this->testService = new Guzzle\Http\Client($this->serverBaseUri);
+	}
+
+	/**
+	 * @BeforeScenario @fixtures
+	 *
+	 * @param Behat\Behat\Event\ScenarioEvent $event
+	 */
+	public function resetTestFixtures(ScenarioEvent $event) {
+		$this->testService->post('test/user/reset')->send();
+	}
+
+	/**
+	 * @AfterStep
+	 */
+	public function showResponseOnException(StepEvent $event) {
+		if ($this->debug && $event->getResult() === \Behat\Behat\Event\StepEvent::FAILED) {
+			$this->printLastResponse();
 		}
 	}
 
@@ -88,35 +117,33 @@ class FeatureContext extends MinkContext {
 	}
 
 	/**
-     * @Given /^the URI should not contain SSO parameters$/
-     */
-    public function theUriShouldNotContainSsoParameters() {
-		throw new \Behat\Behat\Exception\PendingException();
-
-        Assert::assertNotContains('__typo3[singlesignon][accessToken]', $this->getSession()->getCurrentUrl(), 'URI should not contain SSO parameters');
-    }
-
-    /**
-     * @Given /^I should be logged in as "([^"]*)"$/
-     */
-    public function iShouldBeLoggedInAs($accountIdentifier) {
-		$this->assertElementContainsText('#login-status', 'Logged in as: ' . $accountIdentifier);
-    }
-
-    /**
-     * @Given /^I should have the role "([^"]*)"$/
-     */
-    public function iShouldHaveTheRole($roleIdentifier) {
-		$this->assertElementContainsText('#login-status', 'Roles: ' . $roleIdentifier);
-    }
+	 * @Given /^the URI should not contain SSO parameters$/
+	 */
+	public function theUriShouldNotContainSsoParameters() {
+		Assert::assertNotContains('__typo3[singlesignon][accessToken]', $this->getSession()->getCurrentUrl(), 'URI should not contain SSO parameters');
+	}
 
 	/**
-     * @Given /^I wait so long that my session on the instance expires$/
-     */
-    public function iWaitSoLongThatMySessionOnTheInstanceExpires() {
-			// This code only works with the Goutte driver which
-			// uses a patched version of BrowserKit to fix multi-domain
-			// cookie handling
+	 * @Given /^I should be logged in as "([^"]*)"$/
+	 */
+	public function iShouldBeLoggedInAs($accountIdentifier) {
+		$this->assertElementContainsText('#login-status', 'Logged in as: ' . $accountIdentifier);
+	}
+
+	/**
+	 * @Given /^I should have the role "([^"]*)"$/
+	 */
+	public function iShouldHaveTheRole($roleIdentifier) {
+		$this->assertElementContainsText('#login-status', 'Roles: ' . $roleIdentifier);
+	}
+
+	/**
+	 * @Given /^I wait so long that my session on the instance expires$/
+	 */
+	public function iWaitSoLongThatMySessionOnTheInstanceExpires() {
+		// This code only works with the Goutte driver which
+		// uses a patched version of BrowserKit to fix multi-domain
+		// cookie handling
 		$client = $this->getSession()->getDriver()->getClient();
 		$cookieJar = $client->getCookieJar();
 		$instanceCookies = $cookieJar->allValues($this->instanceBaseUri);
@@ -125,7 +152,7 @@ class FeatureContext extends MinkContext {
 		foreach ($instanceCookies as $key => $value) {
 			$cookieJar->expire($key, '/', $parts['host']);
 		}
-    }
+	}
 
 	/**
 	 * @Then /^I have the correct session cookie on the server$/
@@ -135,31 +162,45 @@ class FeatureContext extends MinkContext {
 	}
 
 	/**
-	 * @Given /^There is a server account:$/
+	 * @Given /^There is a server user:$/
 	 */
 	public function thereIsAServerAccount(TableNode $accounts) {
-		var_dump($accounts->getRowsHash());
+		$userProperties = $accounts->getRowsHash();
+
+		$response = $this->testService->post('test/user/create', NULL, array(
+			'user[username]' => $userProperties['username'],
+			'user[firstname]' => $userProperties['firstname'],
+			'user[lastname]' => $userProperties['lastname'],
+			'user[company]' => $userProperties['company'],
+			'user[role]' => $userProperties['roles'],
+			'password' => $userProperties['password'],
+		))->send();
 	}
 
 	/**
-	 * @Given /^There is a mapping for the party name$/
+	 * @Given /^there is a mapping from server to instance users$/
 	 */
-	public function thereIsAMappingForThePartyName() {
-		throw new PendingException();
+	public function thereIsAMappingFromFirstnameAndLastnameToFullname() {
+		// No op, since it's defined on the server
 	}
 
 	/**
-	 * @When /^I log in to the secured page$/
+	 * @When /^I log in to the secured page with "([^"]*)" and "([^"]*)"$/
 	 */
-	public function iLogInToTheSecuredPage() {
-		throw new PendingException();
+	public function iLogInToTheSecuredPageWithAnd($username, $password) {
+		$this->visit($this->instanceBaseUri . 'acme.demoinstance/standard/secure');
+		$this->assertSession()->elementExists('css', 'form input[value="Login"]');
+		$this->fillField('Username', $username);
+		$this->fillField('Password', $password);
+		$this->pressButton('Login');
+		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI');
 	}
 
 	/**
 	 * @Then /^I should have a login name "([^"]*)"$/
 	 */
 	public function iShouldHaveALoginName($loginName) {
-		throw new PendingException();
+		$this->assertElementContainsText('#login-status', 'Name: ' . $loginName);
 	}
 
 	/**
@@ -178,5 +219,7 @@ class FeatureContext extends MinkContext {
 		$previousRequest = $history->back();
 		Assert::assertStringStartsWith($this->instanceBaseUri, $previousRequest->getUri(), 'Previous request URI should start with instance base URI');
 	}
+
 }
+
 ?>

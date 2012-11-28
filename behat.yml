@@ -3,7 +3,13 @@ default:
     Behat\MinkExtension\Extension:
       goutte: ~
       selenium2: ~
+  filters:
+    # Do not run scenarios tagged with @wip by default
+    # Run all scenarios with 'bin/behat --tags "~@all"'
+    tags: "~@wip"
   context:
     parameters:
+      # With debug mode the response will be printed on failures
+      debug: false
       instance_base_uri: http://ssodemoinstance.dev/
       server_base_uri: http://ssodemoserver.dev/
