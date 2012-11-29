@@ -18,5 +18,10 @@ Feature: Global logout synchronization
      Then I should not be authenticated
 
   Scenario: User logs out in instance and needs to log in for secured resource
+    Given I am on the instance homepage
+      And I am logged in to the secured page
+     When I click on the link "Logout"
+      And I click on the link "Go to secure action"
+     Then I should see a login form
 
   Scenario: User logs out from server and is logged out in other instances

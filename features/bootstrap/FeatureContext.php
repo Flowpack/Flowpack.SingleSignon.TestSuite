@@ -103,7 +103,7 @@ class FeatureContext extends MinkContext {
 	}
 
 	/**
-	 * @Given /^I should see a login form$/
+	 * @Then /^I should see a login form$/
 	 */
 	public function iShouldSeeALoginForm() {
 		$this->assertSession()->elementExists('css', 'form input[value="Login"]');
@@ -117,7 +117,7 @@ class FeatureContext extends MinkContext {
 	}
 
 	/**
-	 * @Given /^the URI should not contain SSO parameters$/
+	 * @Then /^the URI should not contain SSO parameters$/
 	 */
 	public function theUriShouldNotContainSsoParameters() {
 		Assert::assertNotContains('__typo3[singlesignon][accessToken]', $this->getSession()->getCurrentUrl(), 'URI should not contain SSO parameters');
