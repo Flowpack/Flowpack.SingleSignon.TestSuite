@@ -12,4 +12,5 @@ default:
       # With debug mode the response will be printed on failures
       debug: false
       instance_base_uri: http://ssodemoinstance.dev/
+      instance2_base_uri: http://ssodemoinstance2.dev/
       server_base_uri: http://ssodemoserver.dev/

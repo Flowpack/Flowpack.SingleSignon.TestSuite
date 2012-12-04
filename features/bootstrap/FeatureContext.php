@@ -30,6 +30,11 @@ class FeatureContext extends MinkContext {
 	/**
 	 * @var string
 	 */
+	protected $instance2BaseUri;
+
+	/**
+	 * @var string
+	 */
 	protected $serverBaseUri;
 
 	/**
@@ -46,6 +51,9 @@ class FeatureContext extends MinkContext {
 	public function __construct(array $parameters) {
 		if (isset($parameters['instance_base_uri'])) {
 			$this->instanceBaseUri = $parameters['instance_base_uri'];
+		}
+		if (isset($parameters['instance2_base_uri'])) {
+			$this->instance2BaseUri = $parameters['instance2_base_uri'];
 		}
 		if (isset($parameters['server_base_uri'])) {
 			$this->serverBaseUri = $parameters['server_base_uri'];
@@ -235,10 +243,65 @@ class FeatureContext extends MinkContext {
 	}
 
 	/**
-	 * @Given /^I visit the server homepage$/
+	 * @When /^I visit the server homepage$/
 	 */
 	public function iVisitTheServerHomepage() {
 		$this->visit($this->serverBaseUri);
+	}
+
+	/**
+	 * @When /^I visit the instance homepage$/
+	 */
+	public function iVisitTheInstanceHomepage() {
+		$this->visit($this->instanceBaseUri);
+	}
+
+	/**
+	 * @Given /^I am logged in to the secured page on instance(\d+)$/
+	 */
+	public function iAmLoggedInToTheSecuredPageOnInstance($instanceNumber) {
+		$baseUri = $this->baseUriForInstance($instanceNumber);
+		$this->visit($baseUri . 'acme.demoinstance/standard/secure');
+		if (strpos($this->getSession()->getCurrentUrl(), $this->serverBaseUri) === 0) {
+			$this->assertSession()->elementExists('css', 'form input[value="Login"]');
+			$this->fillField('Username', 'admin');
+			$this->fillField('Password', 'password');
+			$this->pressButton('Login');
+		}
+		Assert::assertStringStartsWith($baseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance ' . $instanceNumber . ' base URI after login');
+
+	}
+
+	/**
+	 * @When /^I visit the instance(\d+) homepage$/
+	 */
+	public function iVisitAnInstanceHomepage($instanceNumber) {
+		$this->visit($this->baseUriForInstance($instanceNumber));
+	}
+
+	/**
+	 * @Then /^I should not be authenticated on instance(\d+)$/
+	 */
+	public function iShouldNotBeAuthenticatedOnInstance($instanceNumber) {
+		$this->visit($this->baseUriForInstance($instanceNumber));
+		$this->assertPageContainsText('Not authenticated');
+	}
+
+	/**
+	 * @param integer $instanceNumber
+	 * @return string
+	 */
+	protected function baseUriForInstance($instanceNumber) {
+		$baseUri = NULL;
+		if ($instanceNumber == 1) {
+			$baseUri = $this->instanceBaseUri;
+		} elseif ($instanceNumber == 2) {
+			$baseUri = $this->instance2BaseUri;
+		}
+		if ($baseUri === NULL) {
+			throw new \Behat\Behat\Exception\PendingException('Base URI for instance ' . $instanceNumber . ' not configured.');
+		}
+		return $baseUri;
 	}
 
 }
