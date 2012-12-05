@@ -229,7 +229,7 @@ class FeatureContext extends MinkContext {
 	}
 
 	/**
-	 * @Given /^I am logged in to the secured page$/
+	 * @Given /^I am logged in to the secured page on the instance?$/
 	 */
 	public function iAmLoggedInToTheSecuredPage() {
 		$this->iLogInToTheSecuredPageWithAnd('admin', 'password');
@@ -286,6 +286,20 @@ class FeatureContext extends MinkContext {
 		$this->visit($this->baseUriForInstance($instanceNumber));
 		$this->assertPageContainsText('Not authenticated');
 	}
+
+	/**
+     * @When /^The global session expires somehow$/
+     */
+    public function theGlobalSessionExpiresSomehow() {
+		$response = $this->testService->post('test/session/destroyall')->send();
+    }
+
+	/**
+     * @Given /^I wait some seconds$/
+     */
+    public function iWaitSomeSeconds() {
+        sleep(5);
+    }
 
 	/**
 	 * @param integer $instanceNumber

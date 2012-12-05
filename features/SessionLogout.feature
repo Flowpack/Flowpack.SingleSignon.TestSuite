@@ -4,29 +4,25 @@ Feature: Global logout synchronization
   I want the logout to be synchronized between all instances
 
   Scenario: Logout in instance
-    Given I am on the instance homepage
-      And I am logged in to the secured page
+    Given I am logged in to the secured page on the instance
      When I click on the link "Logout"
      Then I should be redirected to the instance
       And I should not be authenticated
 
   Scenario: User logs out in instance and is logged out on server
-    Given I am on the instance homepage
-      And I am logged in to the secured page
+    Given I am logged in to the secured page on the instance
      When I click on the link "Logout"
       And I visit the server homepage
      Then I should not be authenticated
 
   Scenario: User logs out in instance and needs to log in for secured resource
-    Given I am on the instance homepage
-      And I am logged in to the secured page
+    Given I am logged in to the secured page on the instance
      When I click on the link "Logout"
       And I click on the link "Go to secure action"
      Then I should see a login form
 
   Scenario: User logs out from server and is logged out in instance
-    Given I am on the instance homepage
-      And I am logged in to the secured page
+    Given I am logged in to the secured page on the instance
      When I visit the server homepage
       And I click on the link "Logout"
       And I visit the instance homepage
