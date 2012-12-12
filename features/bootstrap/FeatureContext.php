@@ -76,6 +76,24 @@ class FeatureContext extends MinkContext {
 	/**
 	 * @AfterStep
 	 */
+	public function checkForFatalOrException(StepEvent $event) {
+		/** @var \Behat\Mink\Session $session */
+		$session = $this->getSession();
+
+		if ($session instanceof \Behat\Mink\Session && $session->getDriver()->getClient()->getResponse() !== NULL) {
+			if (!in_array($session->getStatusCode(), array(200, 201))) {
+				if ($this->debug) {
+					$this->printLastResponse();
+				}
+				throw new \Exception('Unexpected status code of response: ' . $session->getStatusCode());
+			}
+
+		}
+	}
+
+	/**
+	 * @AfterStep
+	 */
 	public function showResponseOnException(StepEvent $event) {
 		if ($this->debug && $event->getResult() === \Behat\Behat\Event\StepEvent::FAILED) {
 			$this->printLastResponse();
