@@ -43,6 +43,12 @@ class FeatureContext extends MinkContext {
 	protected $debug = FALSE;
 
 	/**
+	 * A client for the test fixtures service to manipulate the demo server or instance state
+	 * @var Guzzle\Http\Client
+	 */
+	protected $testService;
+
+	/**
 	 * Initializes context.
 	 * Every scenario gets it's own context object.
 	 *
@@ -80,8 +86,12 @@ class FeatureContext extends MinkContext {
 		/** @var \Behat\Mink\Session $session */
 		$session = $this->getSession();
 
-		if ($session instanceof \Behat\Mink\Session && $session->getDriver()->getClient()->getResponse() !== NULL) {
-			if (!in_array($session->getStatusCode(), array(200, 201))) {
+		// FIXME This does only work for Mink with Goutte right now!
+		if ($session instanceof \Behat\Mink\Session
+			&& $session->getDriver() instanceof \Behat\Mink\Driver\GoutteDriver
+			&& $session->getDriver()->getClient()->getResponse() !== NULL) {
+			$statusCode = (string)$session->getStatusCode();
+			if (preg_match('/^4|5/',  $statusCode)) {
 				if ($this->debug) {
 					$this->printLastResponse();
 				}
