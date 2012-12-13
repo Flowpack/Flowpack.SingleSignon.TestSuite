@@ -12,7 +12,6 @@ Feature: Instance Login with Single Sign-On
     Then I should be redirected to the server
       And I should see a login form
 
-  @wip
   Scenario: Login on server with correct credentials redirects to original URI
     Given I am on the instance homepage
       And I click on the link "Go to secure action"
