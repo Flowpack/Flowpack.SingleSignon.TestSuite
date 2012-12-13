@@ -323,10 +323,10 @@ class FeatureContext extends MinkContext {
     }
 
 	/**
-     * @Given /^I wait some seconds$/
+     * @When /^I wait for the global session touch interval$/
      */
-    public function iWaitSomeSeconds() {
-        sleep(5);
+    public function iWaitForTheGlobalSessionTouchInterval() {
+        sleep(6);
     }
 
 	/**

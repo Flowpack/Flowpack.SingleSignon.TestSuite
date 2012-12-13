@@ -7,8 +7,8 @@ Feature: Global session expiration synchronization
     Given I am logged in to the secured page on the instance
      When The global session expires somehow
       And I visit the instance homepage
+      And I wait for the global session touch interval
       And I click on the link "Go to secure action"
-      And I wait some seconds
       And I visit the instance homepage
      Then I should not be authenticated
 
