@@ -29,7 +29,7 @@ Feature: Instance Login with Single Sign-On
       And I press "Login"
     Then I should be redirected to the instance
       And I should be logged in as "admin"
-      And I should have the role "Administrator"
+      And I should have the role "Acme.DemoInstance:Administrator"
 
   Scenario: Expired session on instance on callback redirect
     Given I am on the instance homepage

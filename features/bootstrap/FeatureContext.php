@@ -95,7 +95,13 @@ class FeatureContext extends MinkContext {
 				if ($this->debug) {
 					$this->printLastResponse();
 				}
-				throw new \Exception('Unexpected status code of response: ' . $session->getStatusCode());
+				throw new \Exception('Unexpected status code of response: ' . $session->getStatusCode() . ', after step "' . $event->getStep()->getText() . '"');
+			}
+			if (strpos($session->getPage()->getContent(), 'Fatal error:') !== FALSE) {
+				if ($this->debug) {
+					$this->printLastResponse();
+				}
+				throw new \Exception('Received fatal error');
 			}
 
 		}
@@ -135,6 +141,13 @@ class FeatureContext extends MinkContext {
 	 * @Then /^I should be redirected to the server$/
 	 */
 	public function iShouldBeRedirectedToTheServer() {
+		Assert::assertStringStartsWith($this->serverBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with server base URI');
+	}
+
+    /**
+     * @Then /^I should be on the server homepage$/
+     */
+    public function iShouldBeOnTheServerHomepage() {
 		Assert::assertStringStartsWith($this->serverBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with server base URI');
 	}
 
@@ -208,7 +221,7 @@ class FeatureContext extends MinkContext {
 			'user[firstname]' => $userProperties['firstname'],
 			'user[lastname]' => $userProperties['lastname'],
 			'user[company]' => $userProperties['company'],
-			'user[role]' => $userProperties['roles'],
+			'user[role]' => $userProperties['role'],
 			'password' => $userProperties['password'],
 		))->send();
 	}
@@ -225,11 +238,18 @@ class FeatureContext extends MinkContext {
 	 */
 	public function iLogInToTheSecuredPageWithAnd($username, $password) {
 		$this->visit($this->instanceBaseUri . 'acme.demoinstance/standard/secure');
+		$this->iLogInWithUsernameAndPassword($username, $password);
+		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI after login');
+	}
+
+	/**
+	 * @When /^I log in with "([^"]*)" and "([^"]*)"$/
+	 */
+	public function iLogInWithUsernameAndPassword($username, $password) {
 		$this->assertSession()->elementExists('css', 'form input[value="Login"]');
 		$this->fillField('Username', $username);
 		$this->fillField('Password', $password);
 		$this->pressButton('Login');
-		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI after login');
 	}
 
 	/**
