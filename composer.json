@@ -1,4 +1,6 @@
 {
+	"name": "flowpack/singlesignon-testsuite",
+	"description": "A Behat test suite for the Flowpack SSO server / client solution",
 	"repositories": [
 		{
 			"type": "git",
@@ -11,7 +13,8 @@
 		"behat/mink-extension": "*",
 		"behat/mink-goutte-driver": "*",
 		"behat/mink-selenium2-driver": "*",
-		"symfony/browser-kit": "2.1.333"
+		"symfony/browser-kit": "2.1.333",
+		"phpunit/phpunit":"3.7.*"
 	},
 	"minimum-stability": "dev",
 	"config": {
