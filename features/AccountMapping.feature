@@ -5,12 +5,12 @@ Feature: Mapping of account information
 
   Background:
     Given There is a server user:
-      | username  | jdoe                            |
-      | password  | jdoe1234                        |
-      | role      | Acme.DemoInstance:Administrator |
-      | firstname | John                            |
-      | lastname  | Doe                             |
-      | company   | Acme                            |
+      | username  | jdoe                                |
+      | password  | jdoe1234                            |
+      | role      | Flowpack.DemoInstance:Administrator |
+      | firstname | John                                |
+      | lastname  | Doe                                 |
+      | company   | Acme                                |
     And there is a mapping from server to instance users
 
   @fixtures
