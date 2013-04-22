@@ -237,7 +237,7 @@ class FeatureContext extends MinkContext {
 	 * @When /^I log in to the secured page with "([^"]*)" and "([^"]*)"$/
 	 */
 	public function iLogInToTheSecuredPageWithAnd($username, $password) {
-		$this->visit($this->instanceBaseUri . 'acme.demoinstance/standard/secure');
+		$this->visit($this->instanceBaseUri . 'flowpack.singlesignon.demoinstance/standard/secure');
 		$this->iLogInWithUsernameAndPassword($username, $password);
 		Assert::assertStringStartsWith($this->instanceBaseUri, $this->getSession()->getCurrentUrl(), 'URI should start with instance base URI after login');
 	}
@@ -263,7 +263,7 @@ class FeatureContext extends MinkContext {
 	 * @Given /^I visit a protected resource$/
 	 */
 	public function iVisitAProtectedResource() {
-		$this->visit($this->instanceBaseUri . 'acme.demoinstance/standard/secure');
+		$this->visit($this->instanceBaseUri . 'flowpack.singlesignon.demoinstance/standard/secure');
 	}
 
 	/**
@@ -309,7 +309,7 @@ class FeatureContext extends MinkContext {
 	 */
 	public function iAmLoggedInToTheSecuredPageOnInstance($instanceNumber) {
 		$baseUri = $this->baseUriForInstance($instanceNumber);
-		$this->visit($baseUri . 'acme.demoinstance/standard/secure');
+		$this->visit($baseUri . 'flowpack.singlesignon.demoinstance/standard/secure');
 		if (strpos($this->getSession()->getCurrentUrl(), $this->serverBaseUri) === 0) {
 			$this->assertSession()->elementExists('css', 'form input[value="Login"]');
 			$this->fillField('Username', 'admin');
