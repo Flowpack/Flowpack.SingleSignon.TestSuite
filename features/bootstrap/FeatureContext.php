@@ -217,12 +217,12 @@ class FeatureContext extends MinkContext {
 		$userProperties = $accounts->getRowsHash();
 
 		$response = $this->testService->post('test/user/create', NULL, array(
-			'user[username]' => $userProperties['username'],
 			'user[firstname]' => $userProperties['firstname'],
 			'user[lastname]' => $userProperties['lastname'],
 			'user[company]' => $userProperties['company'],
-			'user[role]' => $userProperties['role'],
-			'password' => $userProperties['password'],
+			'role' => $userProperties['role'],
+			'username' => $userProperties['username'],
+			'password' => $userProperties['password']
 		))->send();
 	}
 
